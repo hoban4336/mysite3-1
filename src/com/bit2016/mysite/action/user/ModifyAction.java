@@ -12,7 +12,7 @@ import com.bit2016.mysite.vo.UserVo;
 import com.bit2016.web.Action;
 import com.bit2016.web.util.WebUtil;
 
-public class ModifyFormAction implements Action {
+public class ModifyAction implements Action {
 
 	@Override
 	public void execute(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -29,12 +29,22 @@ public class ModifyFormAction implements Action {
 			return;
 		}
 		
-		UserVo userVo = new UserDao().get( authUser.getNo() );
-		request.setAttribute( "userVo", userVo );
+		String name = request.getParameter( "name" );
+		String password = request.getParameter( "password" );
+		String gender = request.getParameter( "gender" );
 		
-		WebUtil.forward(
-			request, 
+		UserVo vo = new UserVo();
+		vo.setNo( authUser.getNo() );
+		vo.setName(name);
+		vo.setPassword(password);
+		vo.setGender(gender);
+		
+		new UserDao().update( vo );
+		
+		WebUtil.redirect(
+			request,
 			response,
-			"/WEB-INF/views/user/modifyform.jsp");
+			"/mysite3/user?a=modifyform&update=success" );
 	}
+
 }

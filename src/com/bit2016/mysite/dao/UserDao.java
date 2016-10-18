@@ -68,13 +68,52 @@ public class UserDao {
 			}
 		}
 		
-		
 		return vo;
 	}
 	
-	// 회원정보 수정
+	// 사용자 가져오기
 	public UserVo get(Long no) {
 		UserVo vo = null;
+		
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		try {
+			conn = getConnection();
+			
+			String sql = 
+				" select no, name, email, gender" + 
+				"   from users" +
+				"  where no=?";
+			pstmt = conn.prepareStatement( sql );
+
+			pstmt.setLong(1, no);
+
+			rs = pstmt.executeQuery();
+			if( rs.next() ) {
+				vo = new UserVo();
+				vo.setNo( rs.getLong( 1 ) );
+				vo.setName( rs.getString( 2 ) );
+				vo.setEmail( rs.getString( 3 ) );
+				vo.setGender( rs.getString( 4 ) );
+			}
+		} catch (SQLException e) {
+			System.out.println( "error:" + e );
+		} finally {
+			try {
+				if( rs != null ) {
+					rs.close();
+				}
+				if( pstmt != null ) {
+					pstmt.close();
+				}
+				if( conn != null ) {
+					conn.close();
+				}
+			} catch( SQLException e ) {
+				System.out.println( "error:" + e );
+			}
+		}
 		
 		return vo;
 	}
@@ -113,4 +152,45 @@ public class UserDao {
 			}
 		}
 	}
+	
+	public void update( UserVo vo ) {
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		
+		try {
+			conn = getConnection();
+			
+			String sql = "update users set name = ?, gender = ?";
+			if( "".equals( vo.getPassword() ) == false ){
+				sql += ", password=?";
+			}
+			sql += " where no=?";
+			pstmt = conn.prepareStatement(sql);
+			
+			pstmt.setString(1, vo.getName());
+			pstmt.setString(2, vo.getGender() );
+			if( "".equals( vo.getPassword() ) == false ){
+				pstmt.setString( 3, vo.getPassword() );
+				pstmt.setLong( 4, vo.getNo() );
+			} else {
+				pstmt.setLong( 3, vo.getNo() );
+			}
+			
+			pstmt.executeUpdate();
+			
+		} catch (SQLException e) {
+			System.out.println( "error:" + e );
+		} finally {
+			try {
+				if( pstmt != null ) {
+					pstmt.close();
+				}				
+				if( conn != null ) {
+					conn.close();
+				}
+			}catch( SQLException e ) {
+				System.out.println( "error:" + e);
+			}
+		}
+	}	
 }
