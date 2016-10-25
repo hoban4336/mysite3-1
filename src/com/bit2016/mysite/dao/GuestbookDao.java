@@ -70,12 +70,12 @@ public class GuestbookDao {
 			String sql =
 				" insert" +
 				"   into guestbook" +
-				" values (guestbook_seq.nextval, ?, ?, ?, sysdate)";
+				" values (guestbook_seq.nextval, ?,sysdate, ?, ? )";
 			pstmt = conn.prepareStatement(sql);
 			
 			pstmt.setString( 1, vo.getName() );
-			pstmt.setString( 2, vo.getContent() );
-			pstmt.setString( 3, vo.getPassword() );
+			pstmt.setString( 2, vo.getPassword() );
+			pstmt.setString( 3, vo.getContent() );
 			
 			pstmt.executeUpdate();
 			

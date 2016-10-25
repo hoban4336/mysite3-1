@@ -13,35 +13,37 @@ import com.bit2016.web.Action;
 import com.bit2016.web.util.WebUtil;
 
 public class BoardListAction implements Action {
-	private static final int LIST_SIZE = 5;  // <1,2,3,4,5>
-	private static final int PAGE_SIZE =5;
+	private static final int LIST_SIZE = 5; // <1,2,3,4,5>
+	private static final int PAGE_SIZE = 5;
+
 	@Override
-	public void execute(HttpServletRequest request, HttpServletResponse response)throws ServletException, IOException {
-		int page = WebUtil.checkIntParam(request.getParameter("p"),1);
+	public void execute(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
+		int currentpage = WebUtil.checkIntParam(request.getParameter("p"), 1);
+
+		String keyword = WebUtil.checkNullParam(request.getParameter("kwd"), "");
+		System.out.println("keyword: "+keyword);
 		BoardDao dao = new BoardDao();
-		
-		int totalCount=dao.geTotalCount();
-		int pageCount =  (int)Math.ceil( totalCount /PAGE_SIZE );
-		// 넘는 페이지 에러 처리.		
-		if(page > pageCount){
-			page = 1;
+
+		int totalCount = dao.geTotalCount(keyword);
+		int endpage = (int) Math.ceil ( (double) totalCount / PAGE_SIZE );
+		if (currentpage > endpage) {
+			currentpage = 1;
 		}
-		
-		int startpoint = (int) Math.ceil(page/(LIST_SIZE+1))*LIST_SIZE +1;
-//		int endpoint= (int) Math.ceil(page/(LIST_SIZE+1))*LIST_SIZE +LIST_SIZE;
-		int end =  (int)Math.ceil( totalCount /PAGE_SIZE );
-		List<BoardVo> list = dao.getList(page,LIST_SIZE);
-		request.setAttribute("list", list);
-		
-		request.setAttribute("totalCount", totalCount);
-		request.setAttribute("currentpage", page);
-		request.setAttribute("listSize", LIST_SIZE);
-		
-		request.setAttribute("startpage", startpoint);
-		request.setAttribute("end", end);
+
+		int startpoint = (int) Math.ceil ( (double) (currentpage / (LIST_SIZE + 1) ) ) * LIST_SIZE + 1;
+		System.out.println( "startpoint: " + startpoint);
+
+		List<BoardVo> list = dao.getList(keyword, currentpage, LIST_SIZE);
+		request.setAttribute( "list", list);
+
+		request.setAttribute( "totalCount", totalCount);
+		request.setAttribute( "currentpage", currentpage);
+		request.setAttribute( "listSize", LIST_SIZE);
+
+		request.setAttribute( "startpage", startpoint);
+		request.setAttribute( "end", endpage);
 		WebUtil.forward(request, response, "/WEB-INF/views/board/list.jsp");
 	}
-	
-
 
 }

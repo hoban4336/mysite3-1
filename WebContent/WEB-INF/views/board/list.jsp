@@ -14,8 +14,8 @@
 		<c:import url="/WEB-INF/views/includes/header.jsp" />
 		<div id="content">
 			<div id="board">
-				<form id="search_form" action="" method="post">
-					<input type="text" id="kwd" name="kwd" value="">
+				<form id="search_form" action="${pageContext.request.contextPath }/board" method="get">
+					<input type="text" id="kwd" name="kwd" value="${keyword }">
 					<input type="submit" value="찾기">
 				</form>
 				<table class="tbl-ex">
@@ -31,7 +31,7 @@
 						<tr>
 							<td>${totalCount - (currentpage -1)*listSize - status.index }</td>
 							<c:choose>
-								<c:when test="${vo.depth >0 }">
+								<c:when test="${vo.depth >= 0 }">
 									<td class="left" style="padding-left: ${vo.depth * 20}px">
 										<img src="${pageContext.request.contextPath }/assets/images/reply.png">
 										<a href="${pageContext.request.contextPath }/board?a=view&no=${vo.no }&p=${currentpage}">${vo.title }</a>
@@ -66,7 +66,7 @@
 							</c:when>
 							<c:otherwise>
 								<li >
-									<c:choose><c:when test ="${end > npage }">
+									<c:choose><c:when test ="${end >= npage }">
 										<a href="${pageContext.request.contextPath }/board?p=${npage }">${npage }</a>
 										</c:when>
 									<c:otherwise>

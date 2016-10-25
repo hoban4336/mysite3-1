@@ -11,19 +11,10 @@
 </head>
 <body>
 	<div id="container">
-		<div id="header">
-			<h1>MySite</h1>
-			<ul>
-				<li><a href="">로그인</a><li>
-				<li><a href="">회원가입</a><li>
-				<li><a href="">회원정보수정</a><li>
-				<li><a href="">로그아웃</a><li>
-				<li>님 안녕하세요 ^^;</li>
-			</ul>
-		</div>
+		<c:import url="/WEB-INF/views/includes/header.jsp" />
 		<div id="content">
 			<div id="board">
-				<form class="board-form" method="post" action="/mysite/board">
+				<form class="board-form" method="post" action="${pageContext.request.contextPath }/board">
 					<input type = "hidden" name = "a" value="write">
 					<table class="tbl-ex">
 						<tr>
@@ -41,10 +32,10 @@
 						</tr>
 					</table>
 					<div class="bottom">
-						<a href="/mysite/board">취소</a>
+						<a href="${pageContext.request.contextPath }/board">취소</a>
 						<input type="submit" value="등록">
 					</div>
-				</form>				
+				</form>		
 			</div>
 		</div>
 		<c:import url="/WEB-INF/views/includes/navigation.jsp">
